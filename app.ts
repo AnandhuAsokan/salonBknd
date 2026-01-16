@@ -1,0 +1,56 @@
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import path from 'path';
+import connectDB from './src/config/db';
+dotenv.config();
+import initSuperAdmin from './src/utils/initSuperAdmin';
+import { Request, Response, NextFunction } from 'express';
+
+const port = process.env.PORT || 3000;
+ __dirname = path.resolve();
+
+
+// Routers
+import adminRoutes from './src/modules/auth/authRoutes';
+import companySettingsRoutes from './src/modules/companySettings/companySettingsRoutes';
+import { authMiddleware } from './src/middlewares/authMiddleware';
+
+const app = express();
+
+connectDB()
+  .then(async () => {
+    await initSuperAdmin();
+    app.listen(port, () => {
+      console.log(`✅ Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Failed to connect to database:', err);
+  });
+
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/auth', adminRoutes);
+app.use(authMiddleware);
+app.use('/company-settings', companySettingsRoutes);
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({ message: 'API endpoint not found' });
+});
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(err.status as number || 500).json({
+    message: err.message || 'Server Error'
+  });
+});
+
+export default app;

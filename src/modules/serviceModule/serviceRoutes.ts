@@ -1,0 +1,25 @@
+import { Router } from "express";
+import {
+  createServiceController,
+  updateServiceController,
+  getServiceController,
+  getAllServicesController,
+  deleteServiceController,
+  updateServiceStatusController,
+  getStaffSlotsByServiceController,
+} from "./serviceController";
+
+const router = Router();
+
+router.post("/", createServiceController);
+router.put("/:serviceId", updateServiceController);
+router.get("/:serviceId", getServiceController);
+router.get("/", getAllServicesController);
+router.delete("/:serviceId", deleteServiceController);
+router.patch("/:serviceId/status", updateServiceStatusController);
+router.get(
+  "/services/staff-slots",
+  getStaffSlotsByServiceController
+);
+
+export default router;
