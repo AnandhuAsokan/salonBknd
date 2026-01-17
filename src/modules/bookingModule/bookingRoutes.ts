@@ -3,7 +3,7 @@ import * as bookingController from './bookingController';
 
 const router = express.Router();
 
-router.post('/bookings', bookingController.createBooking);
+router.post('/', bookingController.createBooking);
 router.put('/bookings/:id', bookingController.updateBooking);
 router.get('/bookings/:id', bookingController.getBookingById);
 router.get('/bookings', bookingController.getAllBookings);

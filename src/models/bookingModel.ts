@@ -6,13 +6,14 @@ export interface IBooking extends Document {
   staffId: Types.ObjectId;
   serviceId: Types.ObjectId;
   customerName: string;
-  customerPhone: string;
+  customerId: Types.ObjectId;
+  customerPhone?: string;
   date: string;      // YYYY-MM-DD
   startTime: string; // HH:mm
   endTime: string;   // HH:mm
   status: "pending" | "completed" | "cancelled";
   amount: number;
-  review: string;
+  review?: string;
 }
 
 const bookingSchema = new Schema<IBooking>(
@@ -22,7 +23,8 @@ const bookingSchema = new Schema<IBooking>(
     serviceId: { type: Schema.Types.ObjectId, ref: "Service", required: true },
 
     customerName: { type: String, required: true },
-    customerPhone: { type: String},
+    customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
+    customerPhone: { type: String, required: false },
 
     date: { type: String, required: true },
     startTime: { type: String, required: true },

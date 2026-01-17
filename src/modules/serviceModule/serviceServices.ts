@@ -53,7 +53,6 @@ const isOverlap = (start1: number, end1: number, start2: number, end2: number) =
   start1 < end2 && start2 < end1;
 
 export const getStaffSlotsByService = async (serviceId: string, date: string) => {
-  // 🔒 Block past dates completely
   date = normalizeDate(date);
   if (isPastDate(date)) {
     return [];
@@ -72,10 +71,8 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
   const staffList = await findStaffByServiceId(serviceId);
 
   for (const staff of staffList) {
-    // 🔥 Normalize staff leave days
     const normalizedLeaveDays = staff.leaveDays.map(d => normalizeDate(d));
 
-    // 🚫 Skip staff on leave
     if (normalizedLeaveDays.includes(date)) continue;
 
     const bookings = await findBookingsByStaffAndDate(staff._id, date);

@@ -9,33 +9,26 @@ import {
   bookingsGroupedByStartTimeRepo,
   getBookingsForDayRepo,
 } from './bookingRepository';
+import { viewUserById } from '../userModule/userRepository';
+import { findServiceById } from '../serviceModule/serviceRepository';
 
 export const createBookingService = async (data: any) => {
-  const {
-    salonId,
-    staffId,
-    serviceId,
-    customerName,
-    customerPhone,
-    date,
-    startTime,
-    endTime,
-    amount,
-  } = data;
+  const { staffId, serviceId, userId, date, slot } = data;
 
-  if (
-    !salonId ||
-    !staffId ||
-    !serviceId ||
-    !customerName ||
-    !customerPhone ||
-    !date ||
-    !startTime ||
-    !endTime ||
-    !amount
-  ) {
+  if (!staffId || !serviceId || !userId || !date || !slot) {
     throw new Error('All required fields must be provided');
   }
+
+  const userDetails = await viewUserById(userId);
+  if (!userDetails) throw new Error('User not found');
+  const serviceDetails = await findServiceById(serviceId);
+  if (!serviceDetails) throw new Error('Service not found');
+  const [startTime, endTime] = slot.split(' to ');
+  data.amount = serviceDetails.price;
+  data.customerName = userDetails.name;
+  data.customerId = userId;
+  data.startTime = startTime;
+  data.endTime = endTime;
 
   return await createBookingRepo(data);
 };
