@@ -49,7 +49,8 @@ export const updateServiceStatusRepo = async (
 };
 
 export const findServiceById = (serviceId: string) => {
-  return ServiceModel.findById(serviceId);
+  const id =  new Types.ObjectId(serviceId);
+  return ServiceModel.findById(id);
 };
 
 export const findStaffByServiceId = (serviceId: string) => {

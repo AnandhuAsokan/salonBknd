@@ -1,5 +1,5 @@
 import e from "express";
-import { createUser, viewAllUser, viewUser } from "./userRepository";
+import { createUser, viewAllUser, viewUser, viewUserById } from "./userRepository";
 
 export const CreateUser = async (email : String, password : String) => {
     console.log('Creating user...')
@@ -19,5 +19,10 @@ export const ViewAllUsers = async () => {
 
 export const ViewUser = async (email : String) => {
     const user = viewUser(email)
+    return user
+}
+
+export const ViewUserById = async (id : String) => {
+    const user = viewUserById(id)
     return user
 }

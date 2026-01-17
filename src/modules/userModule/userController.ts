@@ -65,3 +65,19 @@ export const viewAllUsers = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const viewUserById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await userServices.ViewUserById(id);
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

@@ -7,17 +7,17 @@ export const createAdmin = async (admin: any) => {
 };
 
 export const viewAdmin = async (email : any) =>{
-    const admin = adminModel.findOne(email);
+    const admin = adminModel.findOne({email : email}).select('-password -salt');
     return admin;
 }
 
 export const viewAllAdmin = async()=>{
-    const admins = adminModel.find();
+    const admins = adminModel.find().select("-password -salt");
     return admins;
 }
 
 export const isEmailExist = async (email: string) => {
-  const admin = await adminModel.findOne({ email });
+  const admin = await adminModel.findOne({ email }).select("-password -salt");
   if(admin) return true;
   return false;
 }

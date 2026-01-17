@@ -1,17 +1,33 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from 'jsonwebtoken';
+import { NextFunction, Response } from "express";
+import jwt from "jsonwebtoken";
+import { AuthRequest } from "../types/authRequest";
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+export const authMiddleware = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    (req as any).user = decoded as unknown as { id: string; role: string };
-  } catch (error : any) {
-    console.error('❌ Error verifying token:', error);
-    return res.status(401).json({ message: 'Unauthorized' });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      userId: string;
+      role?: string;
+    };
+
+    req.user = {
+      userId: decoded.userId,
+      role: decoded.role,
+    };
+
+    next();
+  } catch (error: any) {
+    console.error("❌ Token verification failed:", error.message);
+    return res.status(401).json({ message: "Unauthorized" });
   }
-  next();
 };

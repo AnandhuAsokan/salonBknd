@@ -2,7 +2,7 @@
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface IBooking extends Document {
-  salonId: Types.ObjectId;
+  // salonId: Types.ObjectId;
   staffId: Types.ObjectId;
   serviceId: Types.ObjectId;
   customerName: string;
@@ -17,12 +17,12 @@ export interface IBooking extends Document {
 
 const bookingSchema = new Schema<IBooking>(
   {
-    salonId: { type: Schema.Types.ObjectId, ref: "Salon", required: true },
+    // salonId: { type: Schema.Types.ObjectId, ref: "Salon", required: true },
     staffId: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
     serviceId: { type: Schema.Types.ObjectId, ref: "Service", required: true },
 
     customerName: { type: String, required: true },
-    customerPhone: { type: String, required: true },
+    customerPhone: { type: String},
 
     date: { type: String, required: true },
     startTime: { type: String, required: true },

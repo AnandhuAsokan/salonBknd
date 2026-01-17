@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: {type: Buffer, required: true},
   salt: {type: Buffer},
-  role: { type: String, enum: ['SuperAdmin'] },
+  role: { type: String, enum: ['User'] },
   createdAt: { type: Date, default: Date.now },
 });
 

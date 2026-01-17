@@ -7,12 +7,17 @@ export const createUser = async (user: any) => {
 };
 
 export const viewUser = async (email : any) =>{
-    const user = userModel.findOne(email);
+    const user = userModel.findOne({email:email}).select("-password -salt");
+    return user;
+}
+
+export const viewUserById = async (id : any) =>{
+    const user = userModel.findById(id).select("-password -salt");
     return user;
 }
 
 export const viewAllUser = async()=>{
-    const users = userModel.find();
+    const users = userModel.find().select("-password -salt");
     return users;
 }
 

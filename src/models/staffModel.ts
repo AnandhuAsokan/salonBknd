@@ -7,7 +7,7 @@ export enum Gender {
   Other = "Other",
 }
 export interface IStaff extends Document {
-  salonId: Types.ObjectId;
+  // salonId: Types.ObjectId;
   name: string;
   gender: Gender;
   age: number;
@@ -16,8 +16,8 @@ export interface IStaff extends Document {
   skills?: string[];
   certifications?: string[];
   awards?: string[];
-  ratings: Types.ObjectId[];
-  reviews: Types.ObjectId[];
+  ratings?: Types.ObjectId[];
+  reviews?: Types.ObjectId[];
   role?: string;
   phone: string;
   photoUrl?: string;

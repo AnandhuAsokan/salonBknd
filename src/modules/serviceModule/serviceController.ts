@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
-import * as serviceService from "./serviceServices";
-import { Types } from "mongoose";
-
+import { Request, Response } from 'express';
+import * as serviceService from './serviceServices';
+import { Types } from 'mongoose';
+import { AuthRequest } from '../../types/authRequest';
+import { viewUserById } from '../userModule/userRepository';
 
 /* CREATE SERVICE */
 export const createServiceController = async (req: Request, res: Response) => {
@@ -11,7 +12,7 @@ export const createServiceController = async (req: Request, res: Response) => {
     if (!name || !price || !duration || !idealFor || !category) {
       return res.status(400).json({
         success: false,
-        message: "All required fields must be provided",
+        message: 'All required fields must be provided',
       });
     }
 
@@ -19,7 +20,7 @@ export const createServiceController = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       success: true,
-      message: "Service created successfully",
+      message: 'Service created successfully',
       data: service,
     });
   } catch (error: any) {
@@ -43,13 +44,13 @@ export const updateServiceController = async (req: Request, res: Response) => {
     if (!updatedService) {
       return res.status(404).json({
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Service updated successfully",
+      message: 'Service updated successfully',
       data: updatedService,
     });
   } catch (error: any) {
@@ -65,14 +66,12 @@ export const getServiceController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
 
-    const service = await serviceService.getServiceById(
-      new Types.ObjectId(serviceId)
-    );
+    const service = await serviceService.getServiceById(new Types.ObjectId(serviceId));
 
     if (!service) {
       return res.status(404).json({
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
       });
     }
 
@@ -111,20 +110,18 @@ export const deleteServiceController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
 
-    const deletedService = await serviceService.deleteService(
-      new Types.ObjectId(serviceId)
-    );
+    const deletedService = await serviceService.deleteService(new Types.ObjectId(serviceId));
 
     if (!deletedService) {
       return res.status(404).json({
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Service deleted successfully",
+      message: 'Service deleted successfully',
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -135,18 +132,15 @@ export const deleteServiceController = async (req: Request, res: Response) => {
 };
 
 /* UPDATE SERVICE STATUS */
-export const updateServiceStatusController = async (
-  req: Request,
-  res: Response
-) => {
+export const updateServiceStatusController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
     const { isActive } = req.body;
 
-    if (typeof isActive !== "boolean") {
+    if (typeof isActive !== 'boolean') {
       return res.status(400).json({
         success: false,
-        message: "isActive must be true or false",
+        message: 'isActive must be true or false',
       });
     }
 
@@ -158,13 +152,13 @@ export const updateServiceStatusController = async (
     if (!service) {
       return res.status(404).json({
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Service status updated",
+      message: 'Service status updated',
       data: service,
     });
   } catch (error: any) {
@@ -175,34 +169,38 @@ export const updateServiceStatusController = async (
   }
 };
 
-export const getStaffSlotsByServiceController = async (
-  req: Request,
-  res: Response
-) => {
+export const getStaffSlotsByServiceController = async (req: AuthRequest, res: Response) => {
   try {
-    const { serviceId, date } = req.query;
+    const user = req.user?.userId;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
+    const userInfo = await viewUserById(user)
+    const { serviceId, date } = req.body;
 
     if (!serviceId || !date) {
       return res.status(400).json({
         success: false,
-        message: "serviceId and date are required"
+        message: 'serviceId and date are required',
       });
     }
 
-    const data = await serviceService.getStaffSlotsByService(
-      serviceId as string,
-      date as string
-    );
+    const data = await serviceService.getStaffSlotsByService(serviceId as string, date as string);
 
     return res.status(200).json({
       success: true,
-      data
+      data,
+      userInfo
     });
   } catch (error: any) {
     return res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
-

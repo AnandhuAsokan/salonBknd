@@ -14,8 +14,15 @@ const port = process.env.PORT || 3000;
 
 
 // Routers
-import adminRoutes from './src/modules/auth/authRoutes';
+import authRoutes from './src/modules/auth/authRoutes';
+import adminRoutes from './src/modules/adminModule/adminRoutes';
+import userRoutes from './src/modules/userModule/userRoutes';
+import staffRoutes from './src/modules/staffModule/staffRoutes';
+import serviceRoutes from './src/modules/serviceModule/serviceRoutes';
+import bookingRoutes from './src/modules/bookingModule/bookingRoutes';
 import companySettingsRoutes from './src/modules/companySettings/companySettingsRoutes';
+
+
 import { authMiddleware } from './src/middlewares/authMiddleware';
 
 const app = express();
@@ -38,9 +45,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/auth', adminRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/admins', adminRoutes);
 app.use(authMiddleware);
 app.use('/company-settings', companySettingsRoutes);
+app.use('/staff', staffRoutes);
+app.use('/services', serviceRoutes);
+app.use('/bookings', bookingRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ message: 'API endpoint not found' });

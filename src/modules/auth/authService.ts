@@ -1,25 +1,23 @@
-import jwt from 'jsonwebtoken';
+// src/modules/authModule/authService.ts
 import bcrypt from 'bcrypt';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { findAdminByEmail, findUserByEmail } from './authRepository';
 
 export const loginAdmin = async (email: string, password: string) => {
   const admin = await findAdminByEmail(email);
   if (!admin) throw new Error('Invalid email or password');
 
-  if(admin.role !== 'SuperAdmin') {
-    throw new Error ('Invalid Admin Credentials')
+  if (admin.role !== 'SuperAdmin') {
+    throw new Error('Invalid Admin Credentials');
   }
 
   const isMatch = await bcrypt.compare(password, admin.password.toString());
   if (!isMatch) throw new Error('Invalid email or password');
 
-  const token = jwt.sign({
-    id: admin._id.toString(),
-    role: admin.role
-  } as unknown as { id: string; role: string },
-    process.env.JWT_SECRET as unknown as string,
-    { expiresIn: process.env.JWT_EXPIRES_IN as unknown as number || 1 }
-  );
+  const payload = { userId: admin._id.toString(), role: admin.role };
+  const options: SignOptions = { expiresIn: '1d' };
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET as string, options);
 
   return {
     token,
@@ -27,38 +25,34 @@ export const loginAdmin = async (email: string, password: string) => {
       id: admin._id.toString(),
       name: admin.name,
       email: admin.email,
-      role: admin.role
-    }
+      role: admin.role,
+    },
   };
 };
-
 
 export const userLogin = async (email: string, password: string) => {
   const user = await findUserByEmail(email);
   if (!user) throw new Error('Invalid email or password');
 
-  if(user.role !== 'User') {
-    throw new Error ('Invalid User Credentials')
+  if (user.role !== 'User') {
+    throw new Error('Invalid User Credentials');
   }
 
   const isMatch = await bcrypt.compare(password, user.password.toString());
   if (!isMatch) throw new Error('Invalid email or password');
 
-  const token = jwt.sign({
-    id: user._id.toString(),
-    role: user.role
-  } as unknown as { id: string; role: string },
-    process.env.JWT_SECRET as unknown as string,
-    { expiresIn: process.env.JWT_EXPIRES_IN as unknown as number || 1 }
-  );
+  const payload = { userId: user._id.toString(), role: user.role };
+  const options: SignOptions = { expiresIn: '1d' };
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET as string, options);
 
   return {
     token,
-    admin: {
+    user: {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role
-    }
+      role: user.role,
+    },
   };
 };

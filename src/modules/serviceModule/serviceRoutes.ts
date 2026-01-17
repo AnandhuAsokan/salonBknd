@@ -8,6 +8,7 @@ import {
   updateServiceStatusController,
   getStaffSlotsByServiceController,
 } from "./serviceController";
+import { authMiddleware } from "../../middlewares/authMiddleware";
 
 const router = Router();
 
@@ -17,8 +18,8 @@ router.get("/:serviceId", getServiceController);
 router.get("/", getAllServicesController);
 router.delete("/:serviceId", deleteServiceController);
 router.patch("/:serviceId/status", updateServiceStatusController);
-router.get(
-  "/services/staff-slots",
+router.post(
+  "/staff-slots",authMiddleware,
   getStaffSlotsByServiceController
 );
 
