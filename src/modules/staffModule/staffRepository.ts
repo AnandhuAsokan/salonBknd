@@ -1,3 +1,4 @@
+import holyDayModel from "../../models/holyDayModel";
 import StaffModel from "../../models/staffModel";
 import { IStaff } from "../../models/staffModel";
 import { Types } from "mongoose";
@@ -19,9 +20,35 @@ export const getStaffByIdRepo = async (staffId: Types.ObjectId) => {
     .populate("services");
 };
 
-export const getAllStaffRepo = async (salonId: Types.ObjectId) => {
+export const getAllStaffRepo = async () => {
   return await StaffModel
-    .find({ salonId })
+    .find()
     .populate("services")
     .sort({ createdAt: -1 });
+};
+
+export const getStaffByService = async (serviceId: Types.ObjectId) => {
+  return await StaffModel.find({ services: serviceId }).populate("services")
+};
+
+export const getAllStaff = async () => {
+  return await StaffModel
+    .find({"status": "active"})
+    .populate("services")
+    .sort({ createdAt: -1 });
+};
+
+export const editWorkingHoursRepo = async (
+  openingHours: string,
+  closingHours: string
+) => {
+  return await holyDayModel.updateOne(
+    {},
+    {
+      $set: {
+        openingHours,
+        closingHours
+      }
+    }
+  );
 };

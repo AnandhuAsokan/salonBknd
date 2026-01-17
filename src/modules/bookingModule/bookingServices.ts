@@ -8,9 +8,11 @@ import {
   countBookingsByStatusRepo,
   bookingsGroupedByStartTimeRepo,
   getBookingsForDayRepo,
+  getBookingByCustomer,
 } from './bookingRepository';
 import { viewUserById } from '../userModule/userRepository';
 import { findServiceById } from '../serviceModule/serviceRepository';
+import { Types } from 'mongoose';
 
 export const createBookingService = async (data: any) => {
   const { staffId, serviceId, userId, date, slot } = data;
@@ -21,17 +23,27 @@ export const createBookingService = async (data: any) => {
 
   const userDetails = await viewUserById(userId);
   if (!userDetails) throw new Error('User not found');
+
   const serviceDetails = await findServiceById(serviceId);
   if (!serviceDetails) throw new Error('Service not found');
+
   const [startTime, endTime] = slot.split(' to ');
+
+  const startMinutes = timeToMinutes(startTime);
+  const endMinutes = startMinutes + serviceDetails.duration;
+
   data.amount = serviceDetails.price;
   data.customerName = userDetails.name;
   data.customerId = userId;
   data.startTime = startTime;
   data.endTime = endTime;
+  data.startMinutes = startMinutes;
+  data.endMinutes = endMinutes;
 
   return await createBookingRepo(data);
 };
+
+
 
 export const updateBookingService = async (bookingId: string, data: any) => {
   const booking = await findBookingByIdRepo(bookingId);
@@ -120,10 +132,22 @@ export const bookingAnalyticsService = async (startDate?: string, endDate?: stri
   };
 };
 
-const timeToMinutes = (time: string) => {
-  const [h, m] = time.split(':').map(Number);
-  return h * 60 + m;
+export const timeToMinutes = (time: string): number => {
+  time = time.trim().toLowerCase(); // "09:00am"
+
+  const match = time.match(/(\d{1,2}):(\d{2})(am|pm)/);
+  if (!match) throw new Error(`Invalid time format: ${time}`);
+
+  let hour = parseInt(match[1], 10);
+  const minute = parseInt(match[2], 10);
+  const period = match[3];
+
+  if (period === 'pm' && hour !== 12) hour += 12;
+  if (period === 'am' && hour === 12) hour = 0;
+
+  return hour * 60 + minute;
 };
+
 
 export const getPeakBookingPeriodService = async (date: string) => {
   if (!date) {
@@ -163,4 +187,8 @@ export const getPeakBookingPeriodService = async (date: string) => {
       bookings: peakPeriod[1],
     },
   };
+};
+
+export const GetBookingByCustomer = async (userId: Types.ObjectId) => {
+  return await getBookingByCustomer(userId);
 };

@@ -1,8 +1,12 @@
 import Admin from '../models/superAdminModel';
-import companySettingsModel from '../models/companySettingsModel';
+import holyDayModel from '../models/holyDayModel';
 import bcrypt from 'bcrypt';
+import { getDatesOfWeekdayForCurrentYear } from './helper';
 
-const initSuperAdmin = async () => {
+/* ===========================
+   INIT SUPER ADMIN
+=========================== */
+export const initSuperAdmin = async () => {
   const existingSuperAdmin = await Admin.findOne({ role: 'SuperAdmin' });
   if (existingSuperAdmin) return;
 
@@ -13,14 +17,45 @@ const initSuperAdmin = async () => {
     throw new Error('Super admin credentials not set in env');
   }
 
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
   await Admin.create({
     name: 'Super Admin',
     email: adminEmail,
-    password: adminPassword,
+    password: hashedPassword,
     role: 'SuperAdmin'
   });
 
   console.log('✅ Super Admin initialized');
 };
 
-export default initSuperAdmin;
+/* ===========================
+   INIT HOLIDAYS SETTINGS
+=========================== */
+
+export const initHolidaySettings = async () => {
+  let holiday = await holyDayModel.findOne();
+
+  if (!holiday) {
+    const sundays = getDatesOfWeekdayForCurrentYear(0);
+
+    holiday = await holyDayModel.create({
+      weeklyOffDays: sundays,
+      holidayDays: [],
+      openingHours: '09:00 am',
+      closingHours: '05:00 pm'
+    });
+
+    console.log('✅ Holiday settings created with Sundays');
+    return;
+  }
+
+  // If exists but weeklyOffDays empty
+  if (holiday.weeklyOffDays.length === 0) {
+    holiday.weeklyOffDays = getDatesOfWeekdayForCurrentYear(0);
+    await holiday.save();
+
+    console.log('✅ Weekly off days auto-filled with Sundays');
+  }
+};
+

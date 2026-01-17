@@ -66,6 +66,6 @@ export const findBookingsByStaffAndDate = (
   return bookingModel.find({
     staffId,
     date,
-    status: { $ne: "cancelled" }
+    status: { $nin: ["cancelled", "completed"] }
   });
 };

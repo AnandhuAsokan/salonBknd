@@ -13,12 +13,12 @@ export const updateBookingRepo = (
 };
 
 export const findBookingByIdRepo = (bookingId: string) => {
-  return Booking.findById(bookingId);
+  return Booking.findById(bookingId).sort({ createdAt: -1 });
 };
 
 export const findAllBookingsRepo = (filter: any) => {
   return Booking.find(filter)
-    .populate("staffId serviceId salonId")
+    .populate("staffId serviceId")
     .sort({ createdAt: -1 });
 };
 
@@ -92,4 +92,8 @@ export const getBookingsForDayRepo = (date: string) => {
     date,
     status: { $ne: "cancelled" }
   }).select("startTime");
+};
+
+export const getBookingByCustomer = (userId: Types.ObjectId) => {
+  return Booking.find({ customerId : userId }).populate("staffId serviceId").sort({ createdAt: -1 });
 };

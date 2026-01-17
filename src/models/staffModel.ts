@@ -23,6 +23,8 @@ export interface IStaff extends Document {
   photoUrl?: string;
   services: Types.ObjectId[];
   leaveDays: string[];
+  weeklyOffDays?: string[];
+  holidayDays?: string[];
   joinedAt: Date;
   status?: string;
 }
@@ -45,8 +47,10 @@ const staffSchema = new Schema<IStaff>(
     photoUrl: { type: String, },
     services: { type: [Schema.Types.ObjectId], ref: "Service", required: true },
     leaveDays: { type: [String], },
+    weeklyOffDays: { type: [String], },
+    holidayDays: { type: [String], },
     joinedAt: { type: Date, default: Date.now },
-    status: { type: String, enum: ["active", "inactive"], default: "active" }
+    status: { type: String, enum: ["Active", "Inactive"], default: "active" }
   },
   { timestamps: true }
 );
