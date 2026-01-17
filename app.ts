@@ -41,7 +41,7 @@ connectDB()
 app.use(
   cors({
     origin: ['http://localhost:5173', 'https://yourfrontend.com'],
-    credentials: true, // if you want to send cookies
+    credentials: true,
   })
 );
 app.use(logger('dev'));

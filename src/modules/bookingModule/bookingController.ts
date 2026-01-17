@@ -12,7 +12,6 @@ import {
 import { AuthRequest } from '../../types/authRequest';
 import mongoose from 'mongoose';
 
-/* CREATE */
 export const createBooking = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
@@ -39,7 +38,6 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
   }
 };
 
-/* UPDATE */
 export const updateBooking = async (req: Request, res: Response) => {
   try {
     const booking = await updateBookingService(req.params.id, req.body);
@@ -57,7 +55,6 @@ export const updateBooking = async (req: Request, res: Response) => {
   }
 };
 
-/* GET BY ID */
 export const getBookingById = async (req: Request, res: Response) => {
   try {
     const booking = await getBookingByIdService(req.params.id);
@@ -74,7 +71,6 @@ export const getBookingById = async (req: Request, res: Response) => {
   }
 };
 
-/* GET ALL (FILTER BY STATUS) */
 export const getAllBookings = async (req: Request, res: Response) => {
   try {
     const { status } = req.query;
@@ -93,7 +89,6 @@ export const getAllBookings = async (req: Request, res: Response) => {
   }
 };
 
-/* STATUS CHANGE */
 export const changeBookingStatus = async (req: Request, res: Response) => {
   try {
     const { status } = req.body;

@@ -3,9 +3,6 @@ import holyDayModel from '../models/holyDayModel';
 import bcrypt from 'bcrypt';
 import { getDatesOfWeekdayForCurrentYear } from './helper';
 
-/* ===========================
-   INIT SUPER ADMIN
-=========================== */
 export const initSuperAdmin = async () => {
   const existingSuperAdmin = await Admin.findOne({ role: 'SuperAdmin' });
   if (existingSuperAdmin) return;
@@ -29,9 +26,6 @@ export const initSuperAdmin = async () => {
   console.log('✅ Super Admin initialized');
 };
 
-/* ===========================
-   INIT HOLIDAYS SETTINGS
-=========================== */
 
 export const initHolidaySettings = async () => {
   let holiday = await holyDayModel.findOne();
@@ -50,7 +44,6 @@ export const initHolidaySettings = async () => {
     return;
   }
 
-  // If exists but weeklyOffDays empty
   if (holiday.weeklyOffDays.length === 0) {
     holiday.weeklyOffDays = getDatesOfWeekdayForCurrentYear(0);
     await holiday.save();

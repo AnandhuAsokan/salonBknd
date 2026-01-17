@@ -1,16 +1,14 @@
-// models/Booking.ts
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface IBooking extends Document {
-  // salonId: Types.ObjectId;
   staffId: Types.ObjectId;
   serviceId: Types.ObjectId;
   customerName: string;
   customerId: Types.ObjectId;
   customerPhone?: string;
-  date: string; // YYYY-MM-DD
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
+  date: string;
+  startTime: string;
+  endTime: string;
   startMinutes: number;
   endMinutes: number;
   status: 'pending' | 'completed' | 'cancelled';
@@ -20,7 +18,6 @@ export interface IBooking extends Document {
 
 const bookingSchema = new Schema<IBooking>(
   {
-    // salonId: { type: Schema.Types.ObjectId, ref: "Salon", required: true },
     staffId: { type: Schema.Types.ObjectId, ref: 'Staff', required: true },
     serviceId: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
 

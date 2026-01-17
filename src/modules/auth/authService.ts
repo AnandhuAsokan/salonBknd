@@ -1,4 +1,3 @@
-// src/modules/authModule/authService.ts
 import bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { findAdminByEmail, findUserByEmail } from './authRepository';

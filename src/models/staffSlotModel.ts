@@ -1,12 +1,11 @@
-// models/StaffSlot.ts
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface IStaffSlot extends Document {
   staffId: Types.ObjectId;
   salonId: Types.ObjectId;
-  date: string; // YYYY-MM-DD
-  startTime: string; // HH:mm
-  endTime: string;   // HH:mm
+  date: string;
+  startTime: string;
+  endTime: string;
   isBooked: boolean;
 }
 

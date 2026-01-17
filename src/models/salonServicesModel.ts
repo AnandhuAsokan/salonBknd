@@ -1,4 +1,3 @@
-// models/Service.ts
 import { Schema, model, Document, Types } from "mongoose";
 
 enum IdealFor {
@@ -17,11 +16,10 @@ enum Category {
   Other = 'Other',
 }
 export interface IService extends Document {
-  // salonId: Types.ObjectId;
   name: string;
   description?: string;
   price: number;
-  duration: number; // in minutes
+  duration: number;
   idealFor: IdealFor;
   category: Category;
   isActive: boolean;
@@ -30,7 +28,6 @@ export interface IService extends Document {
 
 const serviceSchema = new Schema<IService>(
   {
-    // salonId: { type: Schema.Types.ObjectId, ref: "Salon", required: true },
     name: { type: String, required: true },
     description: String,
     price: { type: Number, required: true },

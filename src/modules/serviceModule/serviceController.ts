@@ -4,7 +4,6 @@ import { Types } from 'mongoose';
 import { AuthRequest } from '../../types/authRequest';
 import { viewUserById } from '../userModule/userRepository';
 
-/* CREATE SERVICE */
 export const createServiceController = async (req: Request, res: Response) => {
   try {
     const { name, price, duration, idealFor, category } = req.body;
@@ -31,7 +30,6 @@ export const createServiceController = async (req: Request, res: Response) => {
   }
 };
 
-/* UPDATE SERVICE */
 export const updateServiceController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
@@ -61,7 +59,6 @@ export const updateServiceController = async (req: Request, res: Response) => {
   }
 };
 
-/* VIEW SERVICE */
 export const getServiceController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
@@ -87,7 +84,6 @@ export const getServiceController = async (req: Request, res: Response) => {
   }
 };
 
-/* VIEW ALL SERVICES */
 export const getAllServicesController = async (_req: Request, res: Response) => {
   try {
     const services = await serviceService.getAllServices();
@@ -105,7 +101,6 @@ export const getAllServicesController = async (_req: Request, res: Response) => 
   }
 };
 
-/* DELETE SERVICE (SOFT DELETE) */
 export const deleteServiceController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;
@@ -131,7 +126,6 @@ export const deleteServiceController = async (req: Request, res: Response) => {
   }
 };
 
-/* UPDATE SERVICE STATUS */
 export const updateServiceStatusController = async (req: Request, res: Response) => {
   try {
     const { serviceId } = req.params;

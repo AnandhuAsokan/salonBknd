@@ -135,7 +135,7 @@ const companySettingsSchema = new Schema<ICompanySettings>(
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
   },
   {
-    timestamps: true, // Automatically manages createdAt & updatedAt
+    timestamps: true,
   }
 );
 

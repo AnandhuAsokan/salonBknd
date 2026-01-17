@@ -6,17 +6,14 @@ export const createNameAlias = (name: string) => {
 };
 
 export const normalizeDate = (date: string) => {
-  // YYYY/MM/DD → YYYY-MM-DD
   if (date.includes("/")) {
     const parts = date.split("/");
     if (parts[0].length === 4) {
-      // YYYY/MM/DD
       const [yyyy, mm, dd] = parts;
       return `${yyyy}-${mm}-${dd}`;
     }
   }
 
-  // already correct
   return date;
 };
 
@@ -43,15 +40,14 @@ export const getDatesOfWeekdayForCurrentYear = (weekday: number): string[] => {
   const dates: string[] = [];
   const year = new Date().getFullYear();
 
-  let date = new Date(year, 0, 1); // Jan 1
+  let date = new Date(year, 0, 1);
 
-  // Move to first desired weekday
   while (date.getDay() !== weekday) {
     date.setDate(date.getDate() + 1);
   }
 
   while (date.getFullYear() === year) {
-    dates.push(date.toISOString().split('T')[0]); // YYYY-MM-DD
+    dates.push(date.toISOString().split('T')[0]);
     date.setDate(date.getDate() + 7);
   }
 
@@ -88,18 +84,15 @@ export const addHolidayService = async (date: string) => {
     throw new Error('Holiday settings not initialized');
   }
 
-  // Prevent duplicates
   if (holidaySettings.holidayDays.includes(normalizedDate)) {
     throw new Error('Holiday already exists');
   }
 
-  // 1️⃣ Add to company holiday settings
   await holyDayModel.updateOne(
     {},
     { $addToSet: { holidayDays: normalizedDate } }
   );
 
-  // 2️⃣ Push to ALL staff
   await staffModel.updateMany(
     {},
     { $addToSet: { holidayDays: normalizedDate } }
@@ -119,7 +112,6 @@ export const timeToMinutes = (time: string): number => {
   const minute = parseInt(match[2], 10);
   const period = match[3];
 
-  // ⏰ Handle 12am / 12pm
   if (period === 'am' && hour === 12) hour = 0;
   if (period === 'pm' && hour !== 12) hour += 12;
 

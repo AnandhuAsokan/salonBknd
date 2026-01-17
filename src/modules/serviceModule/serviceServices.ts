@@ -40,11 +40,6 @@ export const updateServiceStatus = async (serviceId: Types.ObjectId, isActive: b
   return await serviceRepo.updateServiceStatusRepo(serviceId, isActive);
 };
 
-const timeDetails =  holyDayModel.findOne();
-
-// const WORK_START = 9 * 60; // 9 AM
-// const WORK_END = 21 * 60; // 9 PM
-
 const minutesToTime = (minutes: number) => {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
@@ -91,7 +86,6 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
 
     let start = WORK_START;
 
-    // ⏱ TODAY: remove past slots
     if (isToday(date)) {
       const nowMinutes = roundUpToQuarter(getCurrentMinutes());
       start = Math.max(start, nowMinutes);

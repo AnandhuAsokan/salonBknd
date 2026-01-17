@@ -1,4 +1,3 @@
-// models/Staff.ts
 import { Schema, model, Document, Types } from "mongoose";
 
 export enum Gender {
@@ -7,7 +6,6 @@ export enum Gender {
   Other = "Other",
 }
 export interface IStaff extends Document {
-  // salonId: Types.ObjectId;
   name: string;
   gender: Gender;
   age: number;

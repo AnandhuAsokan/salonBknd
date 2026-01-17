@@ -33,7 +33,6 @@ export const updateBookingStatusRepo = (
   );
 };
 
-/* BOOKINGS COUNT (DATE RANGE) */
 export const countBookingsByDateRangeRepo = (
   startDate: string,
   endDate: string
@@ -43,7 +42,6 @@ export const countBookingsByDateRangeRepo = (
   });
 };
 
-/* STATUS COUNTS */
 export const countBookingsByStatusRepo = (
   startDate: string,
   endDate: string
@@ -63,7 +61,6 @@ export const countBookingsByStatusRepo = (
   ]);
 };
 
-/* BUSIEST TIME SLOTS */
 export const bookingsGroupedByStartTimeRepo = (
   startDate: string,
   endDate: string

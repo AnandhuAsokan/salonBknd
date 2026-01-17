@@ -6,7 +6,6 @@ import holyDayModel from "../../models/holyDayModel";
 import staffModel from "../../models/staffModel";
 import { editWorkingHoursService } from "./staffServices";
 
-/* CREATE STAFF */
 export const createStaffController = async (req: Request, res: Response) => {
   try {
     const staff = await staffService.createStaff(req.body);
@@ -23,7 +22,6 @@ export const createStaffController = async (req: Request, res: Response) => {
   }
 };
 
-/* UPDATE STAFF */
 export const updateStaffController = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
@@ -52,7 +50,6 @@ export const updateStaffController = async (req: Request, res: Response) => {
   }
 };
 
-/* VIEW STAFF (BY ID) */
 export const getStaffController = async (req: Request, res: Response) => {
   try {
     const { staffId } = req.params;
@@ -80,7 +77,6 @@ export const getStaffController = async (req: Request, res: Response) => {
   }
 };
 
-/* VIEW ALL STAFF */
 export const getAllStaffController = async (req: Request, res: Response) => {
   try {
 
@@ -142,13 +138,11 @@ export const updateWeeklyOffDay = async (req: any, res: any) => {
   const weekdayNumber = weekdayMap[weekday.toLowerCase()];
   const dates = getDatesOfWeekdayForCurrentYear(weekdayNumber);
 
-  // Update holiday settings
   await holyDayModel.updateOne(
     {},
     { $set: { weeklyOffDays: dates } }
   );
 
-  // Replace weekly off days for ALL staff
   await staffModel.updateMany(
     {},
     { $set: { weeklyOffDays: dates } }

@@ -99,10 +99,8 @@ export const bookingAnalyticsService = async (startDate?: string, endDate?: stri
   }
 
   type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
-  /* TOTAL BOOKINGS */
   const totalBookings = await countBookingsByDateRangeRepo(from, to);
 
-  /* STATUS COUNTS */
   const statusCountsRaw = await countBookingsByStatusRepo(from, to);
 
   const statusCounts: Record<BookingStatus, number> = {
@@ -116,7 +114,6 @@ export const bookingAnalyticsService = async (startDate?: string, endDate?: stri
     statusCounts[s._id] += s.count;
   });
 
-  /* BUSIEST TIMES */
   const busiestTimesRaw = await bookingsGroupedByStartTimeRepo(from, to);
 
   const busiestTimes = busiestTimesRaw.map((b: any) => ({
@@ -133,8 +130,7 @@ export const bookingAnalyticsService = async (startDate?: string, endDate?: stri
 };
 
 export const timeToMinutes = (time: string): number => {
-  time = time.trim().toLowerCase(); // "09:00am"
-
+  time = time.trim().toLowerCase();
   const match = time.match(/(\d{1,2}):(\d{2})(am|pm)/);
   if (!match) throw new Error(`Invalid time format: ${time}`);
 
@@ -157,9 +153,9 @@ export const getPeakBookingPeriodService = async (date: string) => {
   const bookings = await getBookingsForDayRepo(date);
 
   const periods = {
-    morning: 0, // 09:00 – 12:00
-    afternoon: 0, // 12:00 – 17:00
-    evening: 0, // 17:00 – 21:00
+    morning: 0, 
+    afternoon: 0,
+    evening: 0,
   };
 
   bookings.forEach(b => {
