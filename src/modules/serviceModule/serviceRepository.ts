@@ -55,9 +55,11 @@ export const findServiceById = (serviceId: string) => {
 
 export const findStaffByServiceId = (serviceId: string) => {
   return staffModel.find({
-    services: new Types.ObjectId(serviceId)
+    services: new Types.ObjectId(serviceId),
+    status: { $ne: 'inactive' }
   });
 };
+
 
 export const findBookingsByStaffAndDate = (
   staffId: Types.ObjectId,

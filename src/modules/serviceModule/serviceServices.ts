@@ -54,7 +54,7 @@ const isOverlap = (start1: number, end1: number, start2: number, end2: number) =
 export const getStaffSlotsByService = async (serviceId: string, date: string) => {
   date = normalizeDate(date);
   const timeDetails = await holyDayModel.findOne();
-  if(!timeDetails) return [];
+  if (!timeDetails) return [];
   const startTime = timeDetails.openingHours;
   const endTime = timeDetails.closingHours;
   const WORK_START = timeToMinutes(startTime);
@@ -63,19 +63,28 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
   if (isPastDate(date)) return [];
 
   if (!Types.ObjectId.isValid(serviceId)) {
-    throw new Error("Invalid serviceId");
+    throw new Error('Invalid serviceId');
   }
 
   const service = await findServiceById(serviceId);
-  if (!service) throw new Error("Service not found");
+  if (!service) throw new Error('Service not found');
 
   const duration = service.duration;
   const staffList = await findStaffByServiceId(serviceId);
   const result: any[] = [];
 
   for (const staff of staffList) {
-    const normalizedLeaveDays = staff.leaveDays.map(d => normalizeDate(d));
-    if (normalizedLeaveDays.includes(date)) continue;
+    const normalizedLeaveDays = (staff.leaveDays ?? []).map(d => normalizeDate(d));
+    const normalizedWeeklyOffDays = (staff.weeklyOffDays ?? []).map(d => normalizeDate(d));
+    const normalizedHolidays = (staff.holidayDays ?? []).map(d => normalizeDate(d));
+
+    if (
+      normalizedLeaveDays.includes(date) ||
+      normalizedWeeklyOffDays.includes(date) ||
+      normalizedHolidays.includes(date)
+    ) {
+      continue;
+    }
 
     const bookings = await findBookingsByStaffAndDate(staff._id, date);
 
@@ -96,9 +105,7 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
     for (; start + duration <= WORK_END; start += 15) {
       const end = start + duration;
 
-      const hasConflict = bookedSlots.some(b =>
-        isOverlap(start, end, b.start, b.end)
-      );
+      const hasConflict = bookedSlots.some(b => isOverlap(start, end, b.start, b.end));
 
       if (!hasConflict) {
         slots.push(`${minutesToTime(start)} to ${minutesToTime(end)}`);
@@ -117,4 +124,3 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
 
   return result;
 };
-
