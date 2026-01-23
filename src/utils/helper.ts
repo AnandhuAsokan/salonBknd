@@ -47,7 +47,13 @@ export const getDatesOfWeekdayForCurrentYear = (weekday: number): string[] => {
   }
 
   while (date.getFullYear() === year) {
-    dates.push(date.toISOString().split('T')[0]);
+    const localDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+
+    dates.push(localDate.toLocaleDateString('en-CA'));
     date.setDate(date.getDate() + 7);
   }
 

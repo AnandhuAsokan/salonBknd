@@ -78,12 +78,25 @@ export const getStaffSlotsByService = async (serviceId: string, date: string) =>
     const normalizedWeeklyOffDays = (staff.weeklyOffDays ?? []).map(d => normalizeDate(d));
     const normalizedHolidays = (staff.holidayDays ?? []).map(d => normalizeDate(d));
 
-    if (
-      normalizedLeaveDays.includes(date) ||
-      normalizedWeeklyOffDays.includes(date) ||
-      normalizedHolidays.includes(date)
-    ) {
-      continue;
+    if (normalizedLeaveDays.includes(date)) {
+      return {
+        success: false,
+        message: `${staff.name} is on leave on ${date}`,
+      };
+    }
+
+    if (normalizedWeeklyOffDays.includes(date)) {
+      return {
+        success: false,
+        message: `${staff.name} has a weekly off on ${date}`,
+      };
+    }
+
+    if (normalizedHolidays.includes(date)) {
+      return {
+        success: false,
+        message: `${staff.name} is on holiday on ${date}`,
+      };
     }
 
     const bookings = await findBookingsByStaffAndDate(staff._id, date);
